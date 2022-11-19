@@ -2,7 +2,7 @@
 #include <furi.h>
 #include <furi_hal_usb_hid.h>
 #include <gui/elements.h>
-
+#include "usb_keyboard_icons.h"
 struct UsbHidMouse {
     View* view;
 };
@@ -102,7 +102,7 @@ static void usb_hid_mouse_draw_callback(Canvas* canvas, void* context) {
 
 static void usb_hid_mouse_process(UsbHidMouse* usb_hid_mouse, InputEvent* event) {
     with_view_model(
-        usb_hid_mouse->view, (UsbHidMouseModel * model) {
+        usb_hid_mouse->view, UsbHidMouseModel * model, {
             if(event->key == InputKeyBack) {
                 if(event->type == InputTypeShort) {
                     furi_hal_hid_mouse_press(HID_MOUSE_BTN_RIGHT);
@@ -166,8 +166,7 @@ static void usb_hid_mouse_process(UsbHidMouse* usb_hid_mouse, InputEvent* event)
                     model->up_pressed = false;
                 }
             }
-            return true;
-        });
+        }, true);
 }
 
 static bool usb_hid_mouse_input_callback(InputEvent* event, void* context) {
@@ -195,10 +194,9 @@ UsbHidMouse* usb_hid_mouse_alloc() {
     view_set_input_callback(usb_hid_mouse->view, usb_hid_mouse_input_callback);
 	
 	with_view_model(
-		usb_hid_mouse->view, (UsbHidMouseModel* model) {
+		usb_hid_mouse->view, UsbHidMouseModel* model, {
 		model->connected = true;
-		return true;
-	});
+	}, true);
 
     return usb_hid_mouse;
 }

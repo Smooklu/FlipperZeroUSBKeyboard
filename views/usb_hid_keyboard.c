@@ -3,6 +3,7 @@
 #include <furi_hal_usb_hid.h>
 #include <gui/elements.h>
 #include <gui/icon_i.h>
+#include "usb_keyboard_icons.h"
 
 struct UsbHidKeyboard {
     View* view;
@@ -276,7 +277,7 @@ static void usb_hid_keyboard_get_select_key(UsbHidKeyboardModel* model, UsbHidKe
 
 static void usb_hid_keyboard_process(UsbHidKeyboard* usb_hid_keyboard, InputEvent* event) {
     with_view_model(
-        usb_hid_keyboard->view, (UsbHidKeyboardModel * model) {
+        usb_hid_keyboard->view, UsbHidKeyboardModel * model, {
             if(event->key == InputKeyOk) {
                 if(event->type == InputTypePress) {
                     model->ok_pressed = true;
@@ -337,8 +338,7 @@ static void usb_hid_keyboard_process(UsbHidKeyboard* usb_hid_keyboard, InputEven
                     usb_hid_keyboard_get_select_key(model, (UsbHidKeyboardPoint){.x = 1, .y = 0});
                 }
             }
-            return true;
-        });
+        }, true);
 }
 
 static bool usb_hid_keyboard_input_callback(InputEvent* event, void* context) {
@@ -358,7 +358,7 @@ static bool usb_hid_keyboard_input_callback(InputEvent* event, void* context) {
 
 UsbHidKeyboard* usb_hid_keyboard_alloc() {
     UsbHidKeyboard* usb_hid_keyboard = malloc(sizeof(UsbHidKeyboard));
-	
+
     usb_hid_keyboard->view = view_alloc();
     view_set_context(usb_hid_keyboard->view, usb_hid_keyboard);
     view_allocate_model(usb_hid_keyboard->view, ViewModelTypeLocking, sizeof(UsbHidKeyboardModel));
@@ -366,10 +366,9 @@ UsbHidKeyboard* usb_hid_keyboard_alloc() {
     view_set_input_callback(usb_hid_keyboard->view, usb_hid_keyboard_input_callback);
 
 	with_view_model(
-	usb_hid_keyboard->view, (UsbHidKeyboardModel * model) {
+	usb_hid_keyboard->view, UsbHidKeyboardModel * model, {
 		model->connected = true;
-		return true;
-	});
+	}, true);
 
     return usb_hid_keyboard;
 }
