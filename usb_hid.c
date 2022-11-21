@@ -67,16 +67,16 @@ UsbHid* usb_hid_app_alloc() {
     view_dispatcher_attach_to_gui(app->view_dispatcher, app->gui, ViewDispatcherTypeFullscreen);
 
     // Submenu view
-    app->submenu = submenu_alloc();
+    app->device_type_submenu = submenu_alloc();
     submenu_add_item(
-        app->submenu, "Dirpad", UsbHidSubmenuIndexDirpad, usb_hid_submenu_callback, app);
+        app->device_type_submenu, "Dirpad", UsbHidSubmenuIndexDirpad, usb_hid_submenu_callback, app);
     submenu_add_item(
-        app->submenu, "Keyboard", UsbHidSubmenuIndexKeyboard, usb_hid_submenu_callback, app);
-    submenu_add_item(app->submenu, "Media", UsbHidSubmenuIndexMedia, usb_hid_submenu_callback, app);
-    submenu_add_item(app->submenu, "Mouse", UsbHidSubmenuIndexMouse, usb_hid_submenu_callback, app);
-    view_set_previous_callback(submenu_get_view(app->submenu), usb_hid_exit);
+        app->device_type_submenu, "Keyboard", UsbHidSubmenuIndexKeyboard, usb_hid_submenu_callback, app);
+    submenu_add_item(app->device_type_submenu, "Media", UsbHidSubmenuIndexMedia, usb_hid_submenu_callback, app);
+    submenu_add_item(app->device_type_submenu, "Mouse", UsbHidSubmenuIndexMouse, usb_hid_submenu_callback, app);
+    view_set_previous_callback(submenu_get_view(app->device_type_submenu), usb_hid_exit);
     view_dispatcher_add_view(
-        app->view_dispatcher, UsbHidViewSubmenu, submenu_get_view(app->submenu));
+        app->view_dispatcher, UsbHidViewSubmenu, submenu_get_view(app->device_type_submenu));
 
     // Dialog view
     app->dialog = dialog_ex_alloc();
@@ -130,7 +130,7 @@ void usb_hid_app_free(UsbHid* app) {
 
     // Free views
     view_dispatcher_remove_view(app->view_dispatcher, UsbHidViewSubmenu);
-    submenu_free(app->submenu);
+    submenu_free(app->device_type_submenu);
     view_dispatcher_remove_view(app->view_dispatcher, UsbHidViewExitConfirm);
     dialog_ex_free(app->dialog);
     view_dispatcher_remove_view(app->view_dispatcher, UsbHidViewDirpad);
@@ -162,7 +162,7 @@ int32_t usb_hid_app(void* p) {
     furi_check(furi_hal_usb_set_config(&usb_hid, NULL) == true);
 
     view_dispatcher_run(app->view_dispatcher);	
-	
+
     // Change back profile 
 	furi_hal_usb_set_config(usb_mode_prev, NULL);
     usb_hid_app_free(app);

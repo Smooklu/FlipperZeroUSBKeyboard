@@ -17,7 +17,7 @@ typedef struct {
     Gui* gui;
     NotificationApp* notifications;
     ViewDispatcher* view_dispatcher;
-    Submenu* submenu;
+    Submenu* device_type_submenu;
     DialogEx* dialog;
     UsbHidDirpad* usb_hid_dirpad;
     UsbHidKeyboard* usb_hid_keyboard;
